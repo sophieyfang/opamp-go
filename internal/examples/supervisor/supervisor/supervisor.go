@@ -131,7 +131,7 @@ func (s *Supervisor) loadConfig() error {
 
 func (s *Supervisor) startOpAMP() error {
 
-	s.opampClient = client.NewWebSocket(s.logger)
+	s.opampClient = client.NewHTTP(s.logger)
 
 	settings := types.StartSettings{
 		OpAMPServerURL: s.config.Server.Endpoint,
