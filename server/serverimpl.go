@@ -305,13 +305,13 @@ func (s *server) handlePlainHTTPRequest(req *http.Request, w http.ResponseWriter
 
 	connectionCallbacks.OnConnected(agentConn)
 
-	defer func() {
+	/*	defer func() {
 		// Indicate via the callback that the OpAMP Connection is closed. From OpAMP
 		// perspective the connection represented by this http request
 		// is closed. It is not possible to send or receive more OpAMP messages
 		// via this agentConn.
 		connectionCallbacks.OnConnectionClose(agentConn)
-	}()
+	}() */
 
 	response := connectionCallbacks.OnMessage(agentConn, &request)
 
