@@ -344,7 +344,12 @@ func (s *Supervisor) composeEffectiveConfig(config *protobufs.AgentRemoteConfig)
 		}
 		names = append(names, name)
 	}
-
+	
+        if string(config.Config.ConfigMap[""].Body) == "" {
+                s.logger.Debugf("remote config is empty ).)")
+                return false, nil
+        }
+	
 	sort.Strings(names)
 
 	// Append instance config as the last item.
@@ -362,19 +367,6 @@ func (s *Supervisor) composeEffectiveConfig(config *protobufs.AgentRemoteConfig)
 		if err != nil {
 			return false, fmt.Errorf("cannot merge config named %s: %v", name, err)
 		}
-	}
-
-	// Merge own metrics config.
-	ownMetricsCfg, ok := s.agentConfigOwnMetricsSection.Load().(string)
-	if ok {
-		if err := k.Load(rawbytes.Provider([]byte(ownMetricsCfg)), yaml.Parser()); err != nil {
-			return false, err
-		}
-	}
-
-	// Merge local config last since it has the highest precedence.
-	if err := k.Load(rawbytes.Provider([]byte(s.composeExtraLocalConfig())), yaml.Parser()); err != nil {
-		return false, err
 	}
 
 	// The merged final result is our effective config.
